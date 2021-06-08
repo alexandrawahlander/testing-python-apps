@@ -1,6 +1,6 @@
 from models.item import ItemModel
 from models.store import StoreModel
-from tests.integration.integration_base_test import BaseTest
+from tests.base_test import BaseTest
 
 
 class ItemTest(BaseTest):
@@ -10,15 +10,18 @@ class ItemTest(BaseTest):
             StoreModel('test').save_to_db()
             item = ItemModel('test', 19.99, 1)
 
+            #Testa att objekt inte finns i databas ännu
             self.assertIsNone(ItemModel.find_by_name('test'),
                               "Found an item with name {}, but expected not to.".format(item.name))
 
             item.save_to_db()
 
+            #Testa att objektet nu finns i databasen
             self.assertIsNotNone(ItemModel.find_by_name('test'))
 
             item.delete_from_db()
 
+            #Testa att det fungerade att radera från databasen
             self.assertIsNone(ItemModel.find_by_name('test'))
 
     def test_crud_alex(self):

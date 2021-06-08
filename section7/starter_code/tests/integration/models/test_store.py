@@ -1,14 +1,16 @@
 from models.item import ItemModel
 from models.store import StoreModel
 
-from tests.integration.integration_base_test import BaseTest
+from tests.base_test import BaseTest
 
 
 class StoreTest(BaseTest):
     def test_create_store_items_empty(self):
-        store = StoreModel('test')
+        with self.app_context():
+            store = StoreModel('test')
+            store.save_to_db()
 
-        self.assertListEqual(store.items.all(), [], "Fel")
+            self.assertListEqual(store.items.all(), [], "Fel")
 
     def test_crud(self):  # Test create, read, update, delete
         with self.app_context():
@@ -36,13 +38,15 @@ class StoreTest(BaseTest):
             self.assertEqual(store.items.first().name, 'test_item')
 
     def test_store_json(self):
-        store = StoreModel('test')
-        expected = {
-            'name': 'test',
-            'items': []
-        }
+        with self.app_context():
+            store = StoreModel('test')
+            store.save_to_db()
+            expected = {
+                'name': 'test',
+                'items': []
+            }
 
-        self.assertEqual(store.json(), expected)
+            self.assertEqual(store.json(), expected)
 
     def test_store_json_with_item(self):
         with self.app_context():
